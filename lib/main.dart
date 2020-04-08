@@ -19,18 +19,12 @@ class App extends StatelessWidget {
 
 //Sempre que seguir um padrão de pagina, usa-se o Scaffold (que se comporta como uma página) no return
 
-@immutable
+//@immutable
 class HomePage extends StatefulWidget {
   var items = new List<Item>();
 
   HomePage() {
     items = [];
-    /* items.add(Item(
-        id: 1,
-        title: "Caminhada",
-        done: true,
-        description: "Para fazer já!"));
-    */
   }
 
   @override
@@ -51,12 +45,14 @@ class _HomePageState extends State<HomePage> {
         ),
       );
       newTask.text = "";
+      save();
     });
   }
 
   void remove(int index) {
     setState(() {
       widget.items.removeAt(index);
+      save();
     });
   }
 
@@ -72,6 +68,12 @@ class _HomePageState extends State<HomePage> {
         widget.items = result;
       });
     }
+  }
+
+  save() async {
+    String key = 'data';
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, jsonEncode(widget.items));
   }
 
   _HomePageState() {
@@ -108,6 +110,7 @@ class _HomePageState extends State<HomePage> {
               onChanged: (value) {
                 setState(() {
                   item.done = value;
+                  save();
                 });
               },
             ),
